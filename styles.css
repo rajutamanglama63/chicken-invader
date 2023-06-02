@@ -1,0 +1,155 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+}
+
+.instruction-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-image: url("./images/backgroundimage-1.jpg");
+
+  /* background-repeat: repeat-y;
+            animation: backgroundAnimation 4s linear infinite; 
+        }
+         
+           @keyframes backgroundAnimation {
+            0% {
+                background-position-y: 0%;
+            }
+            100% {
+                background-position-y: 200%;
+            }
+    */
+}
+.logo {
+  margin-top: 50px;
+  height: 400px;
+  width: 600px;
+  top: 30px;
+}
+/* .hen-picture {
+ 
+    height: 200px;
+    width: 120px;
+    margin-left: 100px;
+
+} */
+
+.main-container {
+  width: 1150px;
+  height: 650px;
+  background-color: blue;
+  position: relative;
+  top: 30px;
+
+  display: none;
+}
+
+.game-container {
+  width: 1000px;
+  height: 600px;
+  position: relative;
+  top: 30px;
+  left: 80px;
+
+  right: 80px;
+  background-image: url("./images/backgroundimage-1.jpg");
+
+  background-size: 100%;
+  background-repeat: repeat-y;
+  animation: backgroundAnimation 4s linear infinite;
+}
+
+@keyframes backgroundAnimation {
+  0% {
+    background-position-y: 0%;
+  }
+  100% {
+    background-position-y: 200%;
+  }
+}
+
+.start-button {
+  border-radius: 20px;
+  border: none;
+  color: white;
+  font-size: 40px;
+  font-family: "Courier New", Courier, monospace;
+  background-color: green;
+}
+
+.main-player-bird {
+  height: 50px;
+  width: 40px;
+  bottom: 0px;
+  left: 50%;
+  /* overflow: hidden; */
+
+  /* background-image: url("./images/mainPlayer.gif"); */
+
+  position: absolute;
+}
+.enemy-chicken {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 40px; /* Adjust the width and height according to your enemy chicken size */
+  height: 40px;
+  background-color: none;
+
+  border-radius: 50%;
+}
+
+.enemy-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.enemy-row {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
+.ammo {
+  background-color: green;
+  height: 10px;
+  width: 10px;
+  position: absolute;
+  border-radius: 50%;
+}
+.score-placeholder {
+  height: 40px;
+  width: 80px;
+
+  background-color: green;
+  color: white;
+  padding: 10px;
+  left: 1050px;
+  border-radius: 10px;
+  position: relative;
+}
+.obstacle {
+  background-color: red;
+  width: 40px;
+  height: 70px;
+}
+
+.box {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: green;
+  left: -50px; /* Start position outside the screen */
+  top: 0;
+  transition: all 1s linear;
+}
