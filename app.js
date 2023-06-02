@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const ammoHeight = 10;
   let currentScore = 0;
   let highestScore = localStorage.getItem("highestScore") || 0;
-  
 
   function startGame() {
     instructionContainer.style.display = "none";
@@ -24,15 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
     showMainPlayer();
     setupKeyboardControls();
     setInterval(generateChickenGroup(), 500);
-    createBox()
-    createObstacle()
- 
+    createBox();
+    createObstacle();
   }
-  
+
   function showMainPlayer() {
     mainPlayer.style.display = "block";
   }
- 
+
   function setupKeyboardControls() {
     document.addEventListener("keydown", handleKeyPress);
   }
@@ -55,111 +53,88 @@ document.addEventListener("DOMContentLoaded", () => {
     mainPlayer.style.left = playerPositionX + "px";
   }
 
+  function createBox() {
+    const box = document.createElement("div");
+    box.classList.add("box");
+    mainContainer.appendChild(box);
 
-function createBox() {
-  const box = document.createElement("div");
-  box.classList.add("box");
-  mainContainer.appendChild(box);
+    // Calculate the screen height and width
+    const screenHeight = window.innerHeight;
+    const screenWidth = window.innerWidth;
 
-  // Calculate the screen height and width
-  const screenHeight = window.innerHeight;
-  const screenWidth = window.innerWidth;
+    // Generate random horizontal and vertical offsets
+    const randomOffsetX = Math.floor(Math.random() * (screenWidth - 50));
+    const randomOffsetY = Math.floor(Math.random() * (screenHeight - 50));
 
-  // Generate random horizontal and vertical offsets
-  const randomOffsetX = Math.floor(Math.random() * (screenWidth - 50));
-  const randomOffsetY = Math.floor(Math.random() * (screenHeight - 50));
+    // Set the initial position
+    box.style.transform = `translate(-50px, ${randomOffsetY}px)`;
 
-  // Set the initial position
-  box.style.transform = `translate(-50px, ${randomOffsetY}px)`;
+    // Animate the box
+    setTimeout(() => {
+      box.style.transform = `translate(${randomOffsetX}px, ${screenHeight}px)`;
+    }, 1000);
+  }
 
-  // Animate the box
-  setTimeout(() => {
-    box.style.transform = `translate(${randomOffsetX}px, ${screenHeight}px)`;
-  }, 1000);
-}
+  function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+  setInterval(createBox, 600); // Generate box every 1 minute
 
-setInterval(createBox, 600); // Generate box every 1 minute
+  // ...
 
-// ...
+  for (let i = 0; i < 5; i++) {
+    setTimeout(createBox, getRandomNumber(0, 5000)); // Random delay between 0 to 5 seconds
+  }
 
+  // function createObstacle() {
+  //   const obstacle = document.createElement("div");
+  //   obstacle.classList.add("obstacle");
+  //   mainContainer.appendChild(obstacle);
 
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+  //   // Calculate the screen width
+  //   const screenWidth = window.innerWidth;
 
-for (let i = 0; i < 5; i++) {
-  setTimeout(createBox, getRandomNumber(0, 5000)); // Random delay between 0 to 5 seconds
-}
+  //   // Generate random horizontal position for the obstacle
+  //   const randomOffsetX = Math.floor(Math.random() * (screenWidth - 50));
 
+  //   // Set the initial position at the top of the screen
+  //   obstacle.style.transform = `translate(${randomOffsetX}px, -50px)`;
 
-    
+  //   // Animate the obstacle
+  //   const animationDuration = getRandomNumber(2000, 4000);
+  //   const distanceToFall = screenHeight + 50; // Distance from top to bottom of the screen
 
-// function createObstacle() {
-//   const obstacle = document.createElement("div");
-//   obstacle.classList.add("obstacle");
-//   mainContainer.appendChild(obstacle);
+  //   obstacle.animate(
+  //     [
+  //       { transform: `translate(${randomOffsetX}px, -50px)` },
+  //       { transform: `translate(${randomOffsetX}px, ${distanceToFall}px)` }
+  //     ],
+  //     {
+  //       duration: animationDuration,
+  //       easing: 'linear',
+  //       fill: 'forwards'
+  //     }
+  //   );
 
-//   // Calculate the screen width
-//   const screenWidth = window.innerWidth;
+  //   // Check for collision on each frame
+  //   const collisionIntervalId = setInterval(() => {
+  //     const obstacleRect = obstacle.getBoundingClientRect();
+  //     const playerRect = player.getBoundingClientRect();
 
-//   // Generate random horizontal position for the obstacle
-//   const randomOffsetX = Math.floor(Math.random() * (screenWidth - 50));
+  //     if (isColliding(obstacleRect, playerRect)) {
+  //       // Collision detected
+  //       clearInterval(collisionIntervalId);
+  //       mainContainer.removeChild(obstacle);
+  //       gameOver();
+  //     }
+  //   }, 100);
 
-//   // Set the initial position at the top of the screen
-//   obstacle.style.transform = `translate(${randomOffsetX}px, -50px)`;
-
-//   // Animate the obstacle
-//   const animationDuration = getRandomNumber(2000, 4000);
-//   const distanceToFall = screenHeight + 50; // Distance from top to bottom of the screen
-
-//   obstacle.animate(
-//     [
-//       { transform: `translate(${randomOffsetX}px, -50px)` },
-//       { transform: `translate(${randomOffsetX}px, ${distanceToFall}px)` }
-//     ],
-//     {
-//       duration: animationDuration,
-//       easing: 'linear',
-//       fill: 'forwards'
-//     }
-//   );
-
-//   // Check for collision on each frame
-//   const collisionIntervalId = setInterval(() => {
-//     const obstacleRect = obstacle.getBoundingClientRect();
-//     const playerRect = player.getBoundingClientRect();
-
-//     if (isColliding(obstacleRect, playerRect)) {
-//       // Collision detected
-//       clearInterval(collisionIntervalId);
-//       mainContainer.removeChild(obstacle);
-//       gameOver();
-//     }
-//   }, 100);
-
-//   setTimeout(() => {
-//     clearInterval(collisionIntervalId);
-//     mainContainer.removeChild(obstacle);
-//   }, animationDuration + 1000);
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
+  //   setTimeout(() => {
+  //     clearInterval(collisionIntervalId);
+  //     mainContainer.removeChild(obstacle);
+  //   }, animationDuration + 1000);
+  // }
 
   function generateChickenGroup() {
     const enemyGroup = document.createElement("div");
@@ -174,7 +149,7 @@ for (let i = 0; i < 5; i++) {
 
       for (let i = 0; i < numChickensPerRow[j]; i++) {
         const enemyChicken = document.createElement("img");
-        enemyChicken.src = "hen.gif"; // Replace "hen.gif" with the path to your chicken image
+        enemyChicken.src = "./hen.gif"; // Replace "hen.gif" with the path to your chicken image
         enemyChicken.classList.add("enemy-chicken");
 
         chickenRow.appendChild(enemyChicken);
@@ -186,8 +161,6 @@ for (let i = 0; i < 5; i++) {
     let direction = 1;
 
     const startingLeft = -(numRows * (chickeHeight + chickenGap) - chickenGap);
-
-   
 
     enemyGroup.style.left = `-600px`;
 
@@ -217,7 +190,6 @@ for (let i = 0; i < 5; i++) {
 
     gameContainer.appendChild(enemyGroup);
   }
-  
 
   function fireAmmo() {
     const ammo = document.createElement("div");
@@ -259,10 +231,10 @@ for (let i = 0; i < 5; i++) {
         break;
       }
     }
-     if (enemyChickens.length === 0) {
-    clearInterval(intervalId);
-    generateChickenGroup();
-  }
+    if (enemyChickens.length === 0) {
+      clearInterval(intervalId);
+      generateChickenGroup();
+    }
   }
 
   function isColliding(rect1, rect2) {
