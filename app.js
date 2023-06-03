@@ -4,13 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainContainer = document.querySelector(".main-container");
   const gameContainer = document.querySelector(".game-container");
   const mainPlayer = document.querySelector(".main-player-bird");
+  const obstacle = document.getElementById("#boxId");
+  console.log("obstacle: ", obstacle);
   const scorePlaceHolder = document.createElement("div");
   const ammoSound = new Audio("./sounds/ammoFire.wav");
   const enemyHit = new Audio("./sounds/enemyHit.mp3");
 
   let playerPositionX = 500;
-  const chickeHeight = 40;
-  const chickenGap = 20;
+  const chickeHeight = 50;
+  const chickenGap = 30;
   const ammoSpeed = 10;
   const ammoWidth = 10;
   const ammoHeight = 10;
@@ -18,13 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let highestScore = localStorage.getItem("highestScore") || 0;
 
   function startGame() {
+    console.log("I am clicked!!");
     instructionContainer.style.display = "none";
     mainContainer.style.display = "block";
     showMainPlayer();
     setupKeyboardControls();
     setInterval(generateChickenGroup(), 500);
     createBox();
-    createObstacle();
+    boxPlayerCollisionDetector();
   }
 
   function showMainPlayer() {
@@ -56,10 +59,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function createBox() {
     const box = document.createElement("div");
     box.classList.add("box");
-    mainContainer.appendChild(box);
+
+    gameContainer.appendChild(box);
+
+    const boxDiv = document.getElementsByClassName("box");
+    console.log("boxDiv: ", boxDiv);
+
+    boxDiv.id = "boxId";
 
     // Calculate the screen height and width
     const screenHeight = window.innerHeight;
+
     const screenWidth = window.innerWidth;
 
     // Generate random horizontal and vertical offsets
@@ -79,62 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  setInterval(createBox, 600); // Generate box every 1 minute
+  setInterval(createBox, 4000); // Generate box every 1 minute
 
   // ...
 
   for (let i = 0; i < 5; i++) {
     setTimeout(createBox, getRandomNumber(0, 5000)); // Random delay between 0 to 5 seconds
   }
-
-  // function createObstacle() {
-  //   const obstacle = document.createElement("div");
-  //   obstacle.classList.add("obstacle");
-  //   mainContainer.appendChild(obstacle);
-
-  //   // Calculate the screen width
-  //   const screenWidth = window.innerWidth;
-
-  //   // Generate random horizontal position for the obstacle
-  //   const randomOffsetX = Math.floor(Math.random() * (screenWidth - 50));
-
-  //   // Set the initial position at the top of the screen
-  //   obstacle.style.transform = `translate(${randomOffsetX}px, -50px)`;
-
-  //   // Animate the obstacle
-  //   const animationDuration = getRandomNumber(2000, 4000);
-  //   const distanceToFall = screenHeight + 50; // Distance from top to bottom of the screen
-
-  //   obstacle.animate(
-  //     [
-  //       { transform: `translate(${randomOffsetX}px, -50px)` },
-  //       { transform: `translate(${randomOffsetX}px, ${distanceToFall}px)` }
-  //     ],
-  //     {
-  //       duration: animationDuration,
-  //       easing: 'linear',
-  //       fill: 'forwards'
-  //     }
-  //   );
-
-  //   // Check for collision on each frame
-  //   const collisionIntervalId = setInterval(() => {
-  //     const obstacleRect = obstacle.getBoundingClientRect();
-  //     const playerRect = player.getBoundingClientRect();
-
-  //     if (isColliding(obstacleRect, playerRect)) {
-  //       // Collision detected
-  //       clearInterval(collisionIntervalId);
-  //       mainContainer.removeChild(obstacle);
-  //       gameOver();
-  //     }
-  //   }, 100);
-
-  //   setTimeout(() => {
-  //     clearInterval(collisionIntervalId);
-  //     mainContainer.removeChild(obstacle);
-  //   }, animationDuration + 1000);
-  // }
 
   function generateChickenGroup() {
     const enemyGroup = document.createElement("div");
@@ -162,11 +123,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const startingLeft = -(numRows * (chickeHeight + chickenGap) - chickenGap);
 
-    enemyGroup.style.left = `-600px`;
+    enemyGroup.style.left = `-100px`;
 
-    const containerWidth = 400;
+    const containerWidth = 300;
 
-    const intervalId = setInterval(() => {
+    setInterval(() => {
       let left = parseInt(enemyGroup.offsetLeft);
       let top = parseInt(enemyGroup.offsetTop);
 
