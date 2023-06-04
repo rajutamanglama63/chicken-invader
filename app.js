@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainContainer = document.querySelector(".main-container");
   const gameContainer = document.querySelector(".game-container");
   const mainPlayer = document.querySelector(".main-player-bird");
+  const indicator = document.querySelector(".indicator");
   const obstacle = document.getElementById("#boxId");
   // console.log("obstacle: ", obstacle);
   const scorePlaceHolder = document.createElement("div");
@@ -29,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupKeyboardControls();
     setInterval(generateChickenGroup(), 500);
     createBox();
+    appendLifeIndicator();
   }
 
   function restartGame() {
@@ -266,10 +268,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (isColliding(playerRect, bullectRect)) {
       console.log("hey it's true");
-      hitByEnemyBullet += 1;
+      hitByEnemyBullet++;
+      updateLifeIndicator();
     }
 
-    if (hitByEnemyBullet === 2 && !isGameOver) {
+    if (hitByEnemyBullet === 4 && !isGameOver) {
       clearInterval(intervalId);
       showGameOverAlert();
       isGameOver = true;
@@ -307,6 +310,36 @@ document.addEventListener("DOMContentLoaded", () => {
     modalContent.appendChild(restartButton);
     modalOverlay.appendChild(modalContent);
     gameContainer.appendChild(modalOverlay);
+  }
+
+  function appendLifeIndicator() {
+    const lifeIndicatorContainer = document.createElement("div");
+    lifeIndicatorContainer.classList.add("life-indicator-container");
+
+    for (let i = 0; i < 4; i++) {
+      const lifeIndicator = document.createElement("div");
+      lifeIndicator.classList.add("life-indicator");
+
+      if (i >= hitByEnemyBullet) {
+        lifeIndicator.classList.add("empty");
+      }
+
+      lifeIndicatorContainer.appendChild(lifeIndicator);
+    }
+
+    indicator.appendChild(lifeIndicatorContainer);
+  }
+
+  function updateLifeIndicator() {
+    const lifeIndicators = document.querySelectorAll(".life-indicator");
+
+    for (let i = 0; i < lifeIndicators.length; i++) {
+      if (i < hitByEnemyBullet) {
+        lifeIndicators[i].classList.remove("empty");
+      } else {
+        lifeIndicators[i].classList.add("empty");
+      }
+    }
   }
 
   function increaseScore() {

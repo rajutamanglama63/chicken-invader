@@ -48,6 +48,7 @@
   /* top: 30px; */
 
   display: none;
+
   /* z-index: 10; */
 }
 
@@ -187,4 +188,39 @@ button {
 button:hover {
   background-color: black;
   color: white;
+}
+
+.indicator {
+  background-color: brown;
+  height: 70px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 40px;
+  margin-left: 400px;
+}
+
+.life-line {
+  height: 60px;
+  width: 100px;
+}
+
+.life-indicator-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.life-indicator {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #000;
+  background-color: #f00;
+  margin: 0 5px;
+}
+
+.life-indicator.empty {
+  background-color: transparent;
 }
