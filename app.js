@@ -227,13 +227,13 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(intervalId);
         increaseScore();
 
-        if (enemyChickens.length === 0) {
-          clearInterval(intervalId);
-          generateChickenGroup();
-        }
-
         break;
       }
+    }
+
+    if (enemyChickens.length === 0) {
+      clearInterval(intervalId);
+      generateChickenGroup();
     }
   }
 
