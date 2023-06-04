@@ -154,3 +154,33 @@
   top: 0;
   transition: all 1s linear;
 }
+
+.modal-overlay {
+  background-color: rgb(210, 207, 204);
+  margin: 0 auto;
+  width: 50%;
+  /* height: 100px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: black;
+}
+
+.modal-content {
+  font-size: 50px;
+  font-weight: 900;
+  text-align: center;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+button:hover {
+  background-color: black;
+  color: white;
+}

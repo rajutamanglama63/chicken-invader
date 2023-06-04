@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const scorePlaceHolder = document.createElement("div");
   const ammoSound = new Audio("./sounds/ammoFire.wav");
   const enemyHit = new Audio("./sounds/enemyHit.mp3");
+  let modal;
 
   let playerPositionX = 500;
   const chickeHeight = 50;
@@ -18,16 +19,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const ammoHeight = 10;
   let currentScore = 0;
   let highestScore = localStorage.getItem("highestScore") || 0;
+  let gameOver = false;
+  console.log(gameOver);
 
   function startGame() {
-    console.log("I am clicked!!");
     instructionContainer.style.display = "none";
     mainContainer.style.display = "block";
     showMainPlayer();
     setupKeyboardControls();
     setInterval(generateChickenGroup(), 500);
     createBox();
-    boxPlayerCollisionDetector();
+  }
+
+  function restartGame() {
+    console.log("clicked from game over component");
+    location.reload();
   }
 
   function showMainPlayer() {
@@ -127,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const containerWidth = 300;
 
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       let left = parseInt(enemyGroup.offsetLeft);
       let top = parseInt(enemyGroup.offsetTop);
 
@@ -147,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
         direction = 1; // Reverse direction when reaching the container edges
         enemyGroup.style.top = `${top}px`;
       }
+      checkEnemyGroupAndPlayerCollision(enemyGroup, intervalId);
     }, 30);
 
     gameContainer.appendChild(enemyGroup);
@@ -170,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ammo.style.top = newTop + "px";
       checkCollision(ammo, ammoInterval);
     }, 50);
-    ammoSound.play();
+    // ammoSound.play();
   }
 
   function checkCollision(ammo, intervalId) {
@@ -189,12 +196,32 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(intervalId);
         increaseScore();
 
+        if (enemyChickens.length === 0) {
+          clearInterval(intervalId);
+          generateChickenGroup();
+        }
+
         break;
       }
     }
-    if (enemyChickens.length === 0) {
-      clearInterval(intervalId);
-      generateChickenGroup();
+  }
+
+  function checkEnemyGroupAndPlayerCollision(enemyGroup, intervalId) {
+    if (gameOver) return;
+    // const enemyGroupRect = enemyGroup.getBoundingClientRect();
+
+    const enemyChickens = document.querySelectorAll(".enemy-chicken");
+    const mainPlayerRect = mainPlayer.getBoundingClientRect();
+
+    for (let i = 0; i < enemyChickens.length; i++) {
+      const enemyChicken = enemyChickens[i];
+      const enemyRect = enemyChicken.getBoundingClientRect();
+
+      if (isColliding(mainPlayerRect, enemyRect)) {
+        clearInterval(intervalId);
+        gameOver = true;
+        showGameOverAlert();
+      }
     }
   }
 
@@ -206,6 +233,29 @@ document.addEventListener("DOMContentLoaded", () => {
       rect1.bottom > rect2.top
     );
   }
+
+  function showGameOverAlert() {
+    const modalOverlay = document.createElement("div");
+    modalOverlay.classList.add("modal-overlay");
+
+    modal = modalOverlay;
+
+    const modalContent = document.createElement("div");
+    modalContent.classList.add("modal-content");
+
+    const gameOverText = document.createElement("p");
+    gameOverText.textContent = "Game Over";
+
+    const restartButton = document.createElement("button");
+    restartButton.textContent = "Restart";
+    restartButton.addEventListener("click", restartGame);
+
+    modalContent.appendChild(gameOverText);
+    modalContent.appendChild(restartButton);
+    modalOverlay.appendChild(modalContent);
+    gameContainer.appendChild(modalOverlay);
+  }
+
   function increaseScore() {
     currentScore++;
     if (currentScore > highestScore) {
