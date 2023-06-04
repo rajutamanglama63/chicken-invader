@@ -224,3 +224,22 @@ button:hover {
 .life-indicator.empty {
   background-color: transparent;
 }
+
+.boss-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  gap: 20px;
+}
+
+.main-boss {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px; /* Adjust the width and height according to your enemy chicken size */
+  height: 100px;
+  background-color: none;
+
+  border-radius: 50%;
+}

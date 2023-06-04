@@ -22,6 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let hitByEnemyBullet = 0;
   let isGameOver = false;
+  let totalKill = 0;
+
+  let mainBossIntervalId; // Variable to store the interval ID for main boss movement
+  let mainBossBulletIntervalId; // Variable to store the interval ID for main boss bullet firing
 
   function startGame() {
     instructionContainer.style.display = "none";
@@ -221,6 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
       enemyHit.play();
 
       if (isColliding(ammoRect, enemyRect)) {
+        totalKill++;
+        console.log("totalKill: ", totalKill);
         gameContainer.removeChild(ammo);
         enemyChicken.parentNode.removeChild(enemyChicken);
 
@@ -234,6 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (enemyChickens.length === 0) {
       clearInterval(intervalId);
       generateChickenGroup();
+    } else if (totalKill === 25) {
+      generateMainBoss();
     }
   }
 
@@ -265,10 +273,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const bullectRect = enemyBullet.getBoundingClientRect();
     const playerRect = mainPlayer.getBoundingClientRect();
 
-    console.log("player got hit: ", hitByEnemyBullet);
+    // console.log("player got hit: ", hitByEnemyBullet);
 
     if (isColliding(playerRect, bullectRect)) {
-      console.log("hey it's true");
+      // console.log("hey it's true");
       hitByEnemyBullet++;
       updateLifeIndicator();
     }
@@ -341,6 +349,79 @@ document.addEventListener("DOMContentLoaded", () => {
         lifeIndicators[i].classList.add("empty");
       }
     }
+  }
+
+  function generateMainBoss() {
+    const mainBoss = document.createElement("img");
+    mainBoss.src = "./hen.gif";
+    mainBoss.classList.add("main-boss");
+
+    gameContainer.appendChild(mainBoss);
+
+    let mainBossPositionX = 0; // Initial position of main boss
+
+    mainBoss.style.left = mainBossPositionX + "px";
+
+    mainBossIntervalId = setInterval(() => {
+      mainBossPositionX += 5; // Adjust the value according to your desired movement speed
+
+      if (
+        mainBossPositionX >
+        gameContainer.offsetWidth - mainBoss.offsetWidth
+      ) {
+        clearInterval(mainBossIntervalId);
+
+        // Start firing bullets
+        mainBossBulletIntervalId = setInterval(() => {
+          fireMainBossBullet(mainBossPositionX);
+        }, 3000); // Adjust the firing rate as needed
+      } else {
+        mainBoss.style.left = mainBossPositionX + "px";
+      }
+    }, 30);
+  }
+
+  function fireMainBossBullet(mainBossPositionX) {
+    const bullet = document.createElement("div");
+    bullet.classList.add("ammo");
+
+    const mainBoss = document.querySelector(".main-boss");
+
+    const bulletPositionX =
+      mainBossPositionX + (mainBoss.offsetWidth - ammoWidth) / 2;
+    const bulletPositionY = gameContainer.offsetHeight - 200;
+
+    bullet.style.left = bulletPositionX + "px";
+    bullet.style.top = bulletPositionY + "px";
+
+    gameContainer.appendChild(bullet);
+
+    const bulletInterval = setInterval(() => {
+      let currentTop = parseInt(bullet.style.top);
+      let newTop = currentTop + ammoSpeed;
+      bullet.style.top = newTop + "px";
+
+      // Check collision with the player
+      const playerRect = mainPlayer.getBoundingClientRect();
+      const bulletRect = bullet.getBoundingClientRect();
+
+      if (isColliding(playerRect, bulletRect) && !isGameOver) {
+        clearInterval(bulletInterval);
+        hitByEnemyBullet++;
+        updateLifeIndicator();
+
+        if (hitByEnemyBullet === 4) {
+          clearInterval(mainBossBulletIntervalId);
+          showGameOverAlert();
+          isGameOver = true;
+        }
+      }
+
+      if (parseInt(bullet.style.top) > gameContainer.offsetHeight) {
+        clearInterval(bulletInterval);
+        gameContainer.removeChild(bullet);
+      }
+    }, 50);
   }
 
   function increaseScore() {
