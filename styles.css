@@ -48,6 +48,7 @@
   /* top: 30px; */
 
   display: none;
+  /* z-index: 10; */
 }
 
 .game-container {
@@ -59,6 +60,7 @@
   left: 80px;
 
   right: 80px;
+  z-index: 30;
   background-image: url("./images/backgroundimage-1.jpg");
 
   background-size: 100%;
@@ -110,7 +112,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-
+  z-index: 50;
   gap: 20px;
 }
 
@@ -165,6 +167,8 @@
   align-items: center;
   flex-direction: column;
   color: black;
+  position: relative;
+  z-index: 100;
 }
 
 .modal-content {

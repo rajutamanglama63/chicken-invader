@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const gameContainer = document.querySelector(".game-container");
   const mainPlayer = document.querySelector(".main-player-bird");
   const obstacle = document.getElementById("#boxId");
-  console.log("obstacle: ", obstacle);
+  // console.log("obstacle: ", obstacle);
   const scorePlaceHolder = document.createElement("div");
   const ammoSound = new Audio("./sounds/ammoFire.wav");
   const enemyHit = new Audio("./sounds/enemyHit.mp3");
@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const ammoHeight = 10;
   let currentScore = 0;
   let highestScore = localStorage.getItem("highestScore") || 0;
+
+  let hitByEnemyBullet = 0;
+  let isGameOver = false;
 
   function startGame() {
     instructionContainer.style.display = "none";
@@ -98,6 +101,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   for (let i = 0; i < 5; i++) {
     setTimeout(createBox, getRandomNumber(0, 5000)); // Random delay between 0 to 5 seconds
+  }
+
+  function clearingInterval(interval) {
+    clearInterval(interval);
   }
 
   function generateChickenGroup() {
@@ -197,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let currentTop = parseInt(ammo.style.top);
       let newTop = currentTop + ammoSpeed;
       ammo.style.top = newTop + "px";
-      checkCollision(ammo, ammoInterval);
+      checkEnemyBulletAndPlayerCollision(ammo, ammoInterval);
     }, 50);
   }
 
@@ -237,11 +244,39 @@ document.addEventListener("DOMContentLoaded", () => {
       const enemyChicken = enemyChickens[i];
       const enemyRect = enemyChicken.getBoundingClientRect();
 
-      if (isColliding(mainPlayerRect, enemyRect)) {
+      if (isColliding(mainPlayerRect, enemyRect) && !isGameOver) {
         clearInterval(intervalId);
 
         showGameOverAlert();
+
+        isGameOver = true;
       }
+
+      if (isGameOver) {
+        clearingInterval(intervalId);
+      }
+    }
+  }
+
+  function checkEnemyBulletAndPlayerCollision(enemyBullet, intervalId) {
+    const bullectRect = enemyBullet.getBoundingClientRect();
+    const playerRect = mainPlayer.getBoundingClientRect();
+
+    console.log("player got hit: ", hitByEnemyBullet);
+
+    if (isColliding(playerRect, bullectRect)) {
+      console.log("hey it's true");
+      hitByEnemyBullet += 1;
+    }
+
+    if (hitByEnemyBullet === 2 && !isGameOver) {
+      clearInterval(intervalId);
+      showGameOverAlert();
+      isGameOver = true;
+    }
+
+    if (isGameOver) {
+      clearingInterval(intervalId);
     }
   }
 
@@ -257,8 +292,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function showGameOverAlert() {
     const modalOverlay = document.createElement("div");
     modalOverlay.classList.add("modal-overlay");
-
-    modal = modalOverlay;
 
     const modalContent = document.createElement("div");
     modalContent.classList.add("modal-content");
