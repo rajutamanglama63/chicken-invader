@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (playerPositionX > 960) playerPositionX = 960;
     } else if (key === " ") {
+      event.preventDefault();
       fireAmmo();
     }
     // Update the player's position
