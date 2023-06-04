@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const scorePlaceHolder = document.createElement("div");
   const ammoSound = new Audio("./sounds/ammoFire.wav");
   const enemyHit = new Audio("./sounds/enemyHit.mp3");
-  let modal;
 
   let playerPositionX = 500;
   const chickeHeight = 50;
@@ -19,8 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const ammoHeight = 10;
   let currentScore = 0;
   let highestScore = localStorage.getItem("highestScore") || 0;
-  let gameOver = false;
-  console.log(gameOver);
 
   function startGame() {
     instructionContainer.style.display = "none";
@@ -153,10 +150,12 @@ document.addEventListener("DOMContentLoaded", () => {
         direction = 1; // Reverse direction when reaching the container edges
         enemyGroup.style.top = `${top}px`;
       }
+
       checkEnemyGroupAndPlayerCollision(enemyGroup, intervalId);
     }, 30);
 
     gameContainer.appendChild(enemyGroup);
+    setInterval(() => enemyFireBullet(enemyGroup), 1000);
   }
 
   function fireAmmo() {
@@ -178,6 +177,28 @@ document.addEventListener("DOMContentLoaded", () => {
       checkCollision(ammo, ammoInterval);
     }, 50);
     // ammoSound.play();
+  }
+
+  function enemyFireBullet(enemyGroup) {
+    const ammo = document.createElement("div");
+    ammo.classList.add("ammo");
+
+    const ammoPositionX = (enemyGroup.offsetWidth - ammoWidth) / 2;
+    // console.log("ammoX: ", ammoPositionX);
+    const ammoPositionY = enemyGroup.offsetTop + enemyGroup.offsetHeight - 200;
+    // console.log("ammoY: ", ammoPositionY);
+
+    ammo.style.left = ammoPositionX + "px";
+    ammo.style.top = ammoPositionY + "px";
+
+    enemyGroup.appendChild(ammo); // Append the bullet to the enemyGroup's parent element
+
+    const ammoInterval = setInterval(() => {
+      let currentTop = parseInt(ammo.style.top);
+      let newTop = currentTop + ammoSpeed;
+      ammo.style.top = newTop + "px";
+      checkCollision(ammo, ammoInterval);
+    }, 50);
   }
 
   function checkCollision(ammo, intervalId) {
@@ -207,7 +228,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function checkEnemyGroupAndPlayerCollision(enemyGroup, intervalId) {
-    if (gameOver) return;
     // const enemyGroupRect = enemyGroup.getBoundingClientRect();
 
     const enemyChickens = document.querySelectorAll(".enemy-chicken");
@@ -219,7 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (isColliding(mainPlayerRect, enemyRect)) {
         clearInterval(intervalId);
-        gameOver = true;
+
         showGameOverAlert();
       }
     }
